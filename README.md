@@ -5,7 +5,8 @@ To generate grammar questions based on provided sentences at the difficulty leve
 
 ## Usage
 
-This takes a csv with the format: index, foreign_sentence, english_sentence, link to anki-format sound file (if you have them)
+This takes a csv with the format: index, foreign_sentence, english_sentence, link to anki-format sound file (if you have them).
+Place the csv in the data folder with the name 'source_material.csv'
 You can also pass a version without english_sentences and it will use DeepL (add API key to .env file) to automatically create them
 
 In the list `language_levels`, add the difficulty levels that you want to generate questions for e.g ["A1", "A2", etc].
