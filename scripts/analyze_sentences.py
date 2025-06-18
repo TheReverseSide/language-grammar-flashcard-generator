@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
+import os
 import re
 
+import deepl
 import pandas as pd
 from openai import OpenAI
 import numpy as np
@@ -13,21 +15,39 @@ model_4o = config.get("model", "gpt-4o")
 language_levels = ["A1", "A2", "B1", "B2"] #! Set the skill level of the questions asked (source material will be split equally.)
 client = OpenAI(api_key=config["api_key"])
 
+# Set up DeepL translation
+api_key = os.getenv("DEEPL_API_KEY")
+translator = deepl.Translator(api_key)
+source_language = "DE" #! Set to whatever your source language is
+target_language = "EN-US" #! Set to whatever your preferred output language is
+
 # Load prompts
 system_prompt = Path("prompts/grammar_generator_agent.txt").read_text(encoding="utf-8")
 
 # Grab CSV and load it into df (debug mode: starting with a few only)
-sentences_df = pd.read_csv("data/source_material.csv", names=["index", "foreign_sentence", "english_sentence", "audio_file"])
+sentences_df = pd.read_csv("data/source_material.csv", names=["index", "foreign_sentence", "target_sentence", "audio_file"])
 # sentences_df = sentences_df.head(4) #!! DEBUG MODE
 
-# todo - check if any english translations are missing and add them using DeepL
-# todo - install a check to note add audio if its missing - fail gracefully
+def TranslateSentence(sentence) -> str:
+    """Receives a foreign langauge sentences and translates it to target language"""
+    translated = translator.translate_text(
+            sentence,
+            source_lang=source_language,
+            target_lang=target_language
+    )
+    return translated.text.strip().capitalize()
 
 def SplitSentences(sentences_df) -> list[pd.DataFrame]:
     """Split df into equal parts for each langauge level desired, return list of dfs"""
     return np.array_split(sentences_df, len(language_levels))
 
+# If there are missing translations in target_sentence, create them using DeepL
+missing_translations = sentences_df['target_sentence'].isna() | (sentences_df['target_sentence'] == '')
+if missing_translations.any():
+    print(f"Translating {missing_translations.sum()} missing sentences...")
+    sentences_df.loc[missing_translations, 'target_sentence'] = sentences_df.loc[missing_translations, 'foreign_sentence'].apply(TranslateSentence)
 
+# Divide the sentences into equal parts
 split_sentences = SplitSentences(sentences_df)
 print(f" type of split_sentences {type(split_sentences)}")
 
@@ -74,7 +94,7 @@ for sentence_batch in split_sentences:
         sentence_batch.at[idx, "idiomatic_note"] = parsed.get("idiomatic_note")
 
     # Changing the order to be a bit (slightly) more anki friendly
-    column_order = ["foreign_sentence", "question", "audio_file", "answer", "idiomatic_note", "english_sentence", "language_level"]
+    column_order = ["foreign_sentence", "question", "audio_file", "answer", "idiomatic_note", "target_sentence", "language_level"]
     sentence_batch = sentence_batch[column_order]
 
     sentence_batch.to_csv(f'data/anki_decks/anki_import_{row["language_level"]}.tsv', sep='\t', index=False, header=False, encoding='utf-8')
