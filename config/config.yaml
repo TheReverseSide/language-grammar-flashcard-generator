@@ -1,0 +1,11 @@
+model: gpt-4o # Pick your OpenAI model
+source_language: DE # Set to whatever your source language is
+target_language: EN-US # Set to whatever your preferred output language is
+language_levels: # Set the skill level of the questions asked (source material will be split equally.)
+  - A1
+  - A2
+  - B1
+  - B2
+source_data_path: data/source_material.csv
+output_dir: data/anki_decks
+prompt_path: prompts/grammar_generator_agent.txt
