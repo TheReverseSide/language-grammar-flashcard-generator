@@ -122,8 +122,7 @@ def main():
 
     #! Load data into df
     sentences_df = pd.read_csv(SOURCE_DATA_PATH, names=["index", "foreign_sentence", "target_lang_sentence", "audio_file"])
-    # sentences_df = sentences_df.head(5) #!! DEBUG
-    print(f"FIRST TARGET SENTENCE {sentences_df['target_lang_sentence']}")
+    # sentences_df = sentences_df.head(10) #!! DEBUG
    
     #! If there are missing translations in target language sentence, create them using DeepL
     missing_translations = sentences_df['target_lang_sentence'].isna() | (sentences_df['target_lang_sentence'] == '')
