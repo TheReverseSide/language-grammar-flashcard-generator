@@ -2,4 +2,5 @@ dev_notes.md
 venv/
 anki_decks/*
 data/*
+!data/anki_formatting
 scripts/.env

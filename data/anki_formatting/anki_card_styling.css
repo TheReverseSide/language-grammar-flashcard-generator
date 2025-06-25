@@ -1,0 +1,164 @@
+/* 
+DE1K Variables 
+    You can change the values of these color and font-size variables to customize your experience.
+*/
+
+:root {
+  /* Increase this max-width-card value to increase the maximum width of your card! */
+  --max-width-card: 400px;
+
+  /* Increase the font-size to make the card easier to read! */
+  --font-size-card: 18px;
+  --font-size-targetWord: 26px;
+  --font-size-header: 16px;
+
+  /* Change the color values of these variables to change the colors in your cards! */
+  --color-text-primary: #18191f;
+  --color-nightMode-text-primary: #fbfafe;
+  --color-card-background: #ffffff;
+  --color-nightMode-card-background: #0b0716;
+  --color-box-shadow: rgba(18, 62, 119, 0.1);
+  --color-header: #9ca3af;
+  --color-nightMode-header: rgba(255, 255, 255, 0.5);
+  --color-divider: #e5e7eb;
+  --color-nightMode-divider: #1f2937;
+  --color-sentence-translation: #6b7280;
+  --color-nightMode-sentence-translation: #9ca3af;
+}
+
+/* Basic reset for consistency */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 !important;
+  overflow-wrap: break-word;
+}
+
+/* Night mode support */
+body.nightMode::-webkit-scrollbar {
+  background: #2f2f31;
+}
+
+body.nightMode::-webkit-scrollbar:horizontal {
+  height: 12px;
+}
+
+body.nightMode::-webkit-scrollbar:vertical {
+  width: 12px;
+}
+
+body.nightMode::-webkit-scrollbar-thumb {
+  background: #656565;
+  border-radius: 8px;
+}
+
+/* Main card styles */
+.customCard {
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-card-background);
+  box-shadow: 1px 3px 10px var(--color-box-shadow);
+  border-radius: 8px;
+  min-height: 200px;
+  max-width: var(--max-width-card);
+  font-weight: 500;
+  font-size: var(--font-size-card);
+  font-family: "Inter", sans-serif;
+  color: var(--color-text-primary);
+  padding: 16px;
+}
+
+.nightMode .customCard {
+  color: var(--color-nightMode-text-primary);
+  background-color: var(--color-nightMode-card-background);
+}
+
+.cardBack {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-top: 24px;
+  padding-bottom: 8px;
+}
+
+.targetWordContainer {
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.targetWord {
+  font-size: var(--font-size-targetWord);
+  font-weight: 600;
+}
+
+.header {
+  color: var(--color-header);
+  font-size: var(--font-size-header);
+  font-weight: 400;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.nightMode .header {
+  color: var(--color-nightMode-header);
+}
+
+.dividerLine {
+  width: 100%;
+  border-bottom: 1px solid var(--color-divider);
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.nightMode .dividerLine {
+  border-color: var(--color-nightMode-divider);
+}
+
+.horizontalPadding {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.indent {
+  padding-left: 12px;
+}
+
+.centerVertically {
+  display: flex;
+  align-items: center;
+}
+
+.sentenceTranslation {
+  color: var(--color-sentence-translation);
+  font-weight: 400;
+  font-style: italic;
+  padding-right: 15px;
+  padding-top: 8px;
+}
+
+.nightMode .sentenceTranslation {
+  color: var(--color-nightMode-sentence-translation);
+}
+
+/* Font faces */
+@font-face {
+  font-family: Inter;
+  src: url("_Inter-Regular.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: Inter;
+  src: url("_Inter-Medium.ttf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: Inter;
+  src: url("_Inter-SemiBold.ttf");
+  font-weight: 600;
+}

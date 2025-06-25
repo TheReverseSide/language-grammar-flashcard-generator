@@ -6,6 +6,8 @@ language_levels: # Set the skill level of the questions asked (source material w
   - A2
   # - B1
   # - B2
+  # - C1
+  # - C2
 source_data_path: data/source_material.csv
 output_dir: data/anki_decks
 system_instructions: system_instructions/grammar_generator_agent.txt
