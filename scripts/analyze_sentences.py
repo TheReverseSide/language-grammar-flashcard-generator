@@ -58,7 +58,7 @@ def fill_missing_translations(missing_translations, sentences_df):
     sentences_df.loc[missing_translations, 'target_lang_sentence'] = sentences_df.loc[missing_translations, 'foreign_sentence'].apply(translate_sentence)
 
 
-def generate_grammar_sentences(split_sentences, prompt_text):
+def generate_grammar_sentences(split_sentences, system_text):
     # Iterate through list of dfs and create grammar questions for each sentence
     for sentence_batch in split_sentences:
         # if sentence_batch["language_level"].iloc[0] != "A1": #!! DEBUG: Only generating A1's for now
@@ -73,7 +73,7 @@ def generate_grammar_sentences(split_sentences, prompt_text):
             response = OPENAI_CLIENT.chat.completions.create(
                 model=MODEL,
                 messages=[
-                    {"role": "system", "content": prompt_text},
+                    {"role": "system", "content": system_text},
                     {"role": "user", "content": user_content}
                 ]
             )
@@ -111,18 +111,28 @@ def ensure_output_dir(output_dir: Path):
         output_dir.mkdir(parents=True, exist_ok=True)
 
 
-def load_prompt_text(path_str: str) -> str:
-    return Path(path_str).read_text(encoding="utf-8")
+def load_system_instructions(path_str: str) -> str:
+    """Returns base instructions for agent plus language specific instructions if they exist"""
+    base_instructions = Path(path_str).read_text(encoding="utf-8")
+
+    # Append language-specific instructions
+    lang_specific_path = Path(f"system_instructions/{SOURCE_LANGUAGE.lower()}_instructions.txt")
+
+    if lang_specific_path.exists():
+        lang_specific_instructions = lang_specific_path.read_text(encoding="utf-8")
+        return base_instructions + "\n\n" + lang_specific_instructions
+    
+    return base_instructions
 
 
 def main():
     #! config
     ensure_output_dir(OUTPUT_DIR)
-    prompt_text = load_prompt_text(CONFIG_PATH["prompt_path"])
+    system_instructions = load_system_instructions(CONFIG_PATH["system_instructions"])
 
     #! Load data into df
     sentences_df = pd.read_csv(SOURCE_DATA_PATH, names=["index", "foreign_sentence", "target_lang_sentence", "audio_file"])
-    # sentences_df = sentences_df.head(10) #!! DEBUG
+    sentences_df = sentences_df.head(10) #!! DEBUG
    
     #! If there are missing translations in target language sentence, create them using DeepL
     missing_translations = sentences_df['target_lang_sentence'].isna() | (sentences_df['target_lang_sentence'] == '')
@@ -132,7 +142,7 @@ def main():
     #! Divide the sentences into equal parts and add appropriate 'language_level' column to each split section
     split_sentences = split_sentences_by_level(sentences_df)
 
-    generate_grammar_sentences(split_sentences, prompt_text)
+    generate_grammar_sentences(split_sentences, system_instructions)
 
 
 if __name__ == "__main__":
