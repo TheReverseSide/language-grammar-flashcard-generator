@@ -1,16 +1,45 @@
-model: gpt-4o # Pick your OpenAI model
-source_language: DE # Set to whatever your source material language is
-target_language: EN-US # Set to whatever your preferred output language is
-language_levels: # Set the skill level of the questions asked (source material will be split equally.)
+# Pick your OpenAI model
+model: gpt-4o
+
+# Set to whatever your target language is
+target_language: DE
+
+# Set to whatever your preferred output language is
+output_language: EN-US
+
+# Set the skill level of the questions asked (generated sentences will be split equally.)
+language_levels:
   - A1
   - A2
-  # - B1
-  # - B2
-  # - C1
-  # - C2
-source_data_path: data/source_material.csv
+  - B1
+  - B2
+  - C1
+  - C2
+
+# This is how many cards you want generated
+card_count: 18
+
+# If you have a CSV file with sentences you would like to use, add it here
+target_data_path: data/source_material.csv
+
+# Your compelted Anki decks will be saved here - You need to import them into Anki
 output_dir: data/anki_decks
+
+# Agent instructions for generating grammar questions
 system_instructions: system_instructions/grammar_generator_agent.txt
+
+# Agent instructions for generating source material sentences
+system_source_gen_instructions: system_instructions/system_source_gen_instructions.txt
+
+# Add any specific instructions for your target language here, see DE file as example
 language_specific_instructions:
   DE: system_instructions/language_specific/german_instructions.txt
-  # Add any specific instructions for your source language here, see DE file as example
+
+# These are the voices from ElevenLabs that you use to add tts. Feel free to browse their site and pick your own
+voices:
+  DE: Otto
+  EN: Rachel
+  ES: Antonio
+
+# Update with your own location. The program will move the generated audio files here automatically
+ANKI_MEDIA: "C:\\Users\\brand\\AppData\\Roaming\\Anki2\\User 1\\collection.media"
